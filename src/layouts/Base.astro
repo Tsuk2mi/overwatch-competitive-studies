@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import { existsSync } from 'node:fs';
+import { author, brand, sitePath } from '../lib/lessons';
+interface Props { title?: string; description?: string; article?: boolean; updatedAt?: string; noindex?: boolean; }
+const { title = brand, description = '读懂每一次交战，建立自己的竞技理解。由守望先锋竞技学教父编写的在线战术教科书。', article = false, updatedAt, noindex = false } = Astro.props;
+const fullTitle = title === brand ? brand : `${title}｜${brand}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const path = Astro.url.pathname.slice(import.meta.env.BASE_URL.replace(/\/$/, '').length) || '/';
+const slug = path.startsWith('/lessons/') ? path.split('/').filter(Boolean)[1] : null;
+const image = new URL(sitePath(slug && existsSync(`public/og/${slug}.png`) ? `/og/${slug}.png` : '/og.png'), Astro.site).href;
+const schema = { '@context': 'https://schema.org', '@type': article ? 'Article' : 'WebSite', name: fullTitle, ...(article ? { headline: title, author: { '@type': 'Person', name: author }, dateModified: updatedAt, inLanguage: 'zh-CN' } : {}), url: canonical, description, image };
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f1e9" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <link rel="canonical" href={canonical} />
+    <link rel="stylesheet" href={sitePath('/fonts/fonts.css')} />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content={brand} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="守望先锋竞技学宝典 · 数字战术教科书" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {article && <><meta property="article:author" content={author} /><meta property="article:modified_time" content={`${updatedAt}T00:00:00+08:00`} /></>}
+    {noindex && <meta name="robots" content="noindex" />}
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳至正文</a>
+    <div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
+    <header class="site-header wrap">
+      <a class="brand" href={sitePath('/')}><span class="brand-mark" aria-hidden="true">竞</span><span>守望先锋竞技学宝典<span class="brand-en">OVERWATCH COMPETITIVE STUDIES</span></span></a>
+      <nav aria-label="主导航"><a href={sitePath('/lessons/')} aria-current={path.startsWith('/lessons') ? 'page' : undefined}>课程目录</a><a href={sitePath('/about/')} aria-current={path === '/about/' ? 'page' : undefined}>关于</a></nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer wrap"><div><a href={sitePath('/')}>守望先锋竞技学宝典</a><p>作者 / {author}</p></div><div class="footer-right"><span class="eyebrow">A DIGITAL TACTICAL HANDBOOK</span><p>持续修订 · 长期阅读</p><a href={sitePath('/lessons/')}>课程目录 ↗</a></div></footer>
+  </body>
+</html>

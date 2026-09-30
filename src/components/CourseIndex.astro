@@ -1,0 +1,12 @@
+---
+import { getLessons, lessonUrl, pad } from '../lib/lessons';
+const lessons = await getLessons();
+---
+<div class="course-list">
+  {lessons.map(({ data }) => <a class:list={['course-row', { 'is-pending': data.status !== 'published' }]} href={lessonUrl(data.slug)}>
+    <span class="course-number">{pad(data.lesson)}</span>
+    <div class="course-info"><span class="eyebrow course-english">{data.englishTitle}</span><h3>{data.title}</h3>{data.description && <p>{data.description}</p>}</div>
+    <div class="course-state"><span class:list={['status', { published: data.status === 'published' }]}>{data.status === 'published' ? '已发布' : data.contentState === 'awaiting-source' ? '正文待接入' : '待发布'}</span><span class="course-meta">{data.status === 'published' ? `${data.readingTime} 分钟阅读` : 'COMING SOON'}</span></div>
+    <span class="course-arrow" aria-hidden="true">↗</span>
+  </a>)}
+</div>

@@ -1,0 +1,24 @@
+{
+  "name": "overwatch-competitive-studies",
+  "version": "1.0.0",
+  "description": "守望先锋竞技学宝典 · 数字战术教科书",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro build",
+    "preview": "astro preview --host 0.0.0.0",
+    "audit:content": "node scripts/audit-content.mjs"
+  },
+  "keywords": [],
+  "author": "守望先锋竞技学教父",
+  "license": "UNLICENSED",
+  "type": "module",
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "lighthouse": "^13.5.0",
+    "playwright": "^1.50.1"
+  }
+}
