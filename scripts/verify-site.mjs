@@ -24,7 +24,11 @@ for (const route of routes) {
   const text = await page.locator('body').innerText();
   assert(!/南京大学|NANJING|NJU|未经许可|内部赛训资料|【PDF 第|Lorem ipsum/i.test(text),route+' branding');
   assert(!text.includes('**'),route+' unrendered Markdown emphasis');
-  if (route.includes('/05-')) { assert.equal(await page.locator('.lesson-body').count(),0); assert(text.includes('待发布')); }
+  if (route.includes('/05-')) {
+    assert.equal(await page.locator('.lesson-body').count(),1);
+    assert(text.includes('先帮队友走出来，再从侧线找机会。'));
+    assert.equal(await page.locator('.lesson-body h3').filter({hasText:/^Q[1-6]：/}).count(),6);
+  }
   const anchors = await page.locator('a[href]').evaluateAll(links => links.map(a => a.getAttribute('href')));
   for (const href of anchors) {
     const url = new URL(href,base+route);
