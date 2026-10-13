@@ -2,6 +2,12 @@
 import '../styles/global.css';
 import { existsSync } from 'node:fs';
 import { author, brand, sitePath } from '../lib/lessons';
+import platform from '../lib/platform-links.json';
+const platformSites = [
+  { number: '01', label: '竞技学宝典', href: sitePath('/'), current: true },
+  { number: '02', label: 'Wizard 视频摘要', href: platform.wizard, current: false },
+  { number: '03', label: '竞技学知识库', href: platform.knowledge, current: false },
+];
 interface Props { title?: string; description?: string; article?: boolean; updatedAt?: string; noindex?: boolean; }
 const { title = brand, description = '读懂每一次交战，建立自己的竞技理解。由守望先锋竞技学教父编写的在线战术教科书。', article = false, updatedAt, noindex = false } = Astro.props;
 const fullTitle = title === brand ? brand : `${title}｜${brand}`;
@@ -22,6 +28,7 @@ const schema = { '@context': 'https://schema.org', '@type': article ? 'Article' 
     <meta name="author" content={author} />
     <link rel="canonical" href={canonical} />
     <link rel="stylesheet" href={sitePath('/fonts/fonts.css')} />
+    <link rel="stylesheet" href={sitePath('/platform.css')} />
     <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
     <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:locale" content="zh_CN" />
@@ -43,9 +50,10 @@ const schema = { '@context': 'https://schema.org', '@type': article ? 'Article' 
     <div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
     <header class="site-header wrap">
       <a class="brand" href={sitePath('/')}><span class="brand-mark" aria-hidden="true">竞</span><span>守望先锋竞技学宝典<span class="brand-en">OVERWATCH COMPETITIVE STUDIES</span></span></a>
-      <nav aria-label="主导航"><a href={sitePath('/lessons/')} aria-current={path.startsWith('/lessons') ? 'page' : undefined}>课程目录</a><a href={sitePath('/about/')} aria-current={path === '/about/' ? 'page' : undefined}>关于</a></nav>
+      <nav class="header-primary-nav" aria-label="主导航"><a href={sitePath('/lessons/')} aria-current={path.startsWith('/lessons') ? 'page' : undefined}>课程目录</a><a href={sitePath('/about/')} aria-current={path === '/about/' ? 'page' : undefined}>关于</a><a href={platform.wizard}>Wizard 视频摘要 <span class="platform-link-arrow" aria-hidden="true">↗</span></a><a class="platform-return" href={platform.knowledge}>返回知识库 <span class="platform-link-arrow" aria-hidden="true">↗</span></a></nav>
+      <details class="platform-menu handbook-menu"><summary>菜单</summary><nav aria-label="手机主导航"><a href={sitePath('/lessons/')} aria-current={path.startsWith('/lessons') ? 'page' : undefined}>课程目录</a><a href={sitePath('/about/')} aria-current={path === '/about/' ? 'page' : undefined}>关于</a><a href={platform.wizard}>Wizard 视频摘要 <span class="platform-link-arrow" aria-hidden="true">↗</span></a><a href={platform.knowledge}>返回知识库 <span class="platform-link-arrow" aria-hidden="true">↗</span></a></nav></details>
     </header>
     <main id="main"><slot /></main>
-    <footer class="site-footer wrap"><div><a href={sitePath('/')}>守望先锋竞技学宝典</a><p>作者 / {author}</p></div><div class="footer-right"><span class="eyebrow">A DIGITAL TACTICAL HANDBOOK</span><p>持续修订 · 长期阅读</p><a href={sitePath('/lessons/')}>课程目录 ↗</a></div></footer>
+    <footer class="site-footer wrap"><div><a href={sitePath('/')}>守望先锋竞技学宝典</a><p>作者 / {author}</p></div><div class="footer-right"><span class="eyebrow">A DIGITAL TACTICAL HANDBOOK</span><p>持续修订 · 长期阅读</p><nav class="platform-footer-nav" aria-label="页脚网站群导航">{platformSites.map(site => <a href={site.href} aria-current={site.current ? 'page' : undefined}><span class="platform-nav-number">{site.number}</span>{site.label}{!site.current && <span class="platform-link-arrow" aria-hidden="true">↗</span>}</a>)}</nav><a href={sitePath('/lessons/')}>课程目录 ↗</a></div></footer>
   </body>
 </html>
