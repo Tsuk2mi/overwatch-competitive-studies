@@ -45,7 +45,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
     for (const link of links) link.addEventListener('click', () => { document.querySelector<HTMLDetailsElement>('.toc-mobile')?.removeAttribute('open'); });
     for (const table of document.querySelectorAll('#lesson-body table')) {
       const scroll = document.createElement('div'); scroll.className = 'table-scroll'; scroll.tabIndex = 0;
-      scroll.setAttribute('role', 'region'); scroll.setAttribute('aria-label', '阵容体系比较表，可横向滚动');
+      scroll.setAttribute('role', 'region'); scroll.setAttribute('aria-label', `${table.previousElementSibling?.textContent || '课程表格'}，可横向滚动`);
       table.parentNode?.insertBefore(scroll, table); scroll.appendChild(table);
     }
     update();

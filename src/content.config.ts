@@ -12,6 +12,7 @@ const lessons = defineCollection({
     description: z.string().max(180),
     englishTitle: z.string(),
     shortTitle: z.string().optional(),
+    supplement: z.object({ title: z.string(), anchor: z.string().regex(/^[a-z0-9-]+$/) }).optional(),
     updatedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     readingTime: z.number().int().nonnegative(),
     concepts: z.array(z.string()).default([]),
